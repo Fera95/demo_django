@@ -5,7 +5,7 @@ from rest_framework import status
 from .models import Book
 from .serializers import BookSerializer
 
-# Create your views here.
+
 class BookListCreateView(APIView):
     def get(self,request):
         books = Book.objects.all()
@@ -22,3 +22,28 @@ class BookListCreateView(APIView):
             )
         #Si no es valido
         return Response({"status":"error","data": serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+
+class BookDetailView(APIView):
+    def get_object(self,id):
+        try:
+            return Book.objects.get(id=id)
+        except Book.DoesNotExist:
+            return None
+
+    def get(self,request,id):
+        book = self.get_object(id)
+        if not book:
+            return Response(
+            {
+                "status":"error" ,"data":"Not Found"
+            },
+            status=status.HTTP_404_NOT_FOUND
+            )
+        
+        serializer = BookSerializer(book)
+        return Response(
+            {
+                "status": "success" , "data": serializer.data
+            },
+            status=status.HTTP_200_OK
+        )
