@@ -1,13 +1,15 @@
 from django.shortcuts import render  # noqa: F401
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+#from rest_framework.views import APIView
+
 
 from .models import Book
 from .serializers import BookSerializer
 
 
-class BookListCreateView(APIView):
+#class BookListCreateView(APIView):
+class BookListCreateView(GenericAPIView):
 
     def get(self,request):
 
@@ -37,8 +39,8 @@ class BookListCreateView(APIView):
 
         return Response({"status":"error","data": serializer.errors},status=status.HTTP_400_BAD_REQUEST)
 
-
-class BookDetailView(APIView):
+# class BookDetailView(APIView):
+class BookDetailView(GenericAPIView):
 
     def get_object(self,id):
 
