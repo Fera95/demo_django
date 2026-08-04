@@ -14,6 +14,7 @@ from .serializers import BookSerializer
 class BookListCreateView(GenericAPIView):
     pagination_class = PageNumberPagination
     pagination_class.page_size = 2
+    pagination_class.page_size_query_param = "page_size"
     def get(self,request):
 
         books = Book.objects.all()
