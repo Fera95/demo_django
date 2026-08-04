@@ -2,8 +2,8 @@ from django.shortcuts import render  # noqa: F401
 from rest_framework import status
 
 #from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.generics import GenericAPIView, ListCreateAPIView
+from rest_framework.pagination import PageNumberPagination  # noqa: F401
 from rest_framework.response import Response
 
 from .models import Book
@@ -11,39 +11,43 @@ from .serializers import BookSerializer
 
 
 #class BookListCreateView(APIView):
-class BookListCreateView(GenericAPIView):
-    pagination_class = PageNumberPagination
-    pagination_class.page_size = 2
-    pagination_class.page_size_query_param = "page_size"
-    def get(self,request):
+class BookListCreateView(ListCreateAPIView):
+    serializer_class = BookSerializer
+    queryset = Book.objects.all()
 
-        books = Book.objects.all()
 
-        serializer = BookSerializer(books,many=True)
+    # pagination_class = PageNumberPagination
+    # pagination_class.page_size = 2
+    # pagination_class.page_size_query_param = "page_size"
+    # def get(self,request):
 
-        # return Response({"status":"sucess", "data":serializer.data}, status=status.HTTP_200_OK)
-        return self.get_paginated_response (
-            {"status":"sucess", "data":self.paginate_queryset(serializer.data)}
-        )
+    #     books = Book.objects.all()
 
-    def post(self,request):
+    #     serializer = BookSerializer(books,many=True)
 
-        serializer = BookSerializer(data=request.data)
+    #     # return Response({"status":"sucess", "data":serializer.data}, status=status.HTTP_200_OK)
+    #     return self.get_paginated_response (
+    #         {"status":"sucess", "data":self.paginate_queryset(serializer.data)}
+    #     )
 
-        if serializer.is_valid():
+    # def post(self,request):
 
-            serializer.save()
+    #     serializer = BookSerializer(data=request.data)
 
-            return Response(
+    #     if serializer.is_valid():
 
-                {"status":"sucess","data":serializer.data},
+    #         serializer.save()
 
-                status=status.HTTP_201_CREATED
-            )
+    #         return Response(
 
-        #Si no es valido
+    #             {"status":"sucess","data":serializer.data},
 
-        return Response({"status":"error","data": serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+    #             status=status.HTTP_201_CREATED
+    #         )
+
+    #     #Si no es valido
+
+    #     return Response({"status":"error","data": serializer.errors},status=status.HTTP_400_BAD_REQUEST)
 
 # class BookDetailView(APIView):
 class BookDetailView(GenericAPIView):
