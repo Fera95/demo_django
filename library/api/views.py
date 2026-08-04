@@ -1,8 +1,10 @@
 from django.shortcuts import render  # noqa: F401
 from rest_framework import status
-from rest_framework.response import Response
-#from rest_framework.views import APIView
 
+#from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 from .models import Book
 from .serializers import BookSerializer
@@ -10,15 +12,18 @@ from .serializers import BookSerializer
 
 #class BookListCreateView(APIView):
 class BookListCreateView(GenericAPIView):
-
+    pagination_class = PageNumberPagination
+    pagination_class.page_size = 2
     def get(self,request):
 
         books = Book.objects.all()
 
         serializer = BookSerializer(books,many=True)
 
-        return Response({"status":"sucess", "data":serializer.data}, status=status.HTTP_200_OK)
-
+        # return Response({"status":"sucess", "data":serializer.data}, status=status.HTTP_200_OK)
+        return self.get_paginated_response (
+            {"status":"sucess", "data":self.paginate_queryset(serializer.data)}
+        )
 
     def post(self,request):
 
