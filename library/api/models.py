@@ -10,3 +10,11 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+class Review(models.Model):
+    book = models.ForeignKey(Book, related_name="reviews", on_delete=models.CASCADE)
+    comment = models.TextField()
+    rating = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.book.title} - {self.rating}"
